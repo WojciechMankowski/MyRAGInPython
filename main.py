@@ -1,35 +1,53 @@
-
 import os
-
-from langchain_community.document_loaders import UnstructuredMarkdownLoader
-from langchain_core.documents import Document
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+from Helper.load_data import load_markdown, save_metadata
 from embeding import create_embeding
-
 from faiss_indexer import FaissIndexer
-from query import generate_answer_from_context
+from Helper.query import generate_answer_from_context
+from Helper.split import split_documents
+from fastapi import FastAPI, Request
+
+app = FastAPI()
+# wszystkie notatki
+@app.get('/')
+def home():
+    return "API"
+
+# tworzenie embedingu i bazy
+@app.get("/create")
+def create_database():
+    path = 'data'
+    files = [f'{path}/{file}' for file in os.listdir(path) if file.endswith('.md')]
+
+    documents = []
+    for file in files:
+        documents.extend(load_markdown(file))  # Rozwijamy listę dokumentów
+
+    chunks = split_documents(documents)
+
+    # 🧠 Tworzymy metadane do zapisania
+    metadata = []
+    for idx, chunk in enumerate(chunks):
+        metadata.append({
+            "id": idx,
+            "source": chunk.metadata.get("source", "unknown"),
+            "text": chunk.page_content
+        })
+
+    # 🔤 Generujemy embeddingi
+    embeddings = create_embeding([chunk.page_content for chunk in chunks])
+
+    # 🧠 Tworzymy FAISS index
+    indexer = FaissIndexer(dimension=embeddings.shape[1])
+    indexer.add_vectors(embeddings)
+
+    # 💾 Zapis metadanych do JSON-a
+    save_metadata(metadata)
+
+    return {"status": "success", "chunks": len(chunks)}
 
 
-def load_markdown(file: str):
-    loader = UnstructuredMarkdownLoader(file)
-    docs = loader.load()
-    return docs  # docs to teraz lista dokumentów
-
-
-def split_documents(documents: list[Document]):
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=800,
-        chunk_overlap=80,
-        length_function=len,
-        is_separator_regex=False,
-    )
-    all_chunks = []
-    for doc in documents:
-        chunks = text_splitter.split_documents([doc])  # Przechodzimy przez każdy dokument
-        all_chunks.extend(chunks)  # Dodajemy je do listy
-    return all_chunks
-
+# aktualizacja bazy
+# zadawanie pytań
 
 def main():
     path = 'data'
@@ -59,6 +77,7 @@ def main():
     answer = generate_answer_from_context(query, context)
 
     print(answer)
+
 
 
 if __name__ == '__main__':
