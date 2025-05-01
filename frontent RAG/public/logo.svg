@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="300"
+    height="300"
+    viewBox="0 0 300 300"
+    aria-labelledby="title desc"
+    role="img">
+  <title id="title">Ikona bazy wiedzy z AI</title>
+  <desc id="desc">Stylizowana otwarta książka symbolizująca bazę wiedzy, utrzymana w niebiesko-białej kolorystyce.</desc>
+
+  <!-- Tło (opcjonalne – można usunąć, jeśli chcesz mieć przezroczyste) -->
+  <rect width="100%" height="100%" fill="#FFFFFF"/>
+
+  <!-- Lewa strona książki -->
+  <rect x="40" y="45" width="95" height="210" rx="6" fill="#EAF2FF" stroke="#0066FF" stroke-width="4"/>
+  <!-- Prawa strona książki -->
+  <rect x="165" y="45" width="95" height="210" rx="6" fill="#EAF2FF" stroke="#0066FF" stroke-width="4"/>
+
+  <!-- Kręgosłup książki -->
+  <line x1="150" y1="45" x2="150" y2="255" stroke="#0066FF" stroke-width="6"/>
+
+  <!-- Linie „tekstu” na lewej stronie -->
+  <g stroke="#0066FF" stroke-width="4" stroke-linecap="round">
+    <line x1="55" x2="120" y1="85" y2="85"/>
+    <line x1="55" x2="120" y1="115" y2="115"/>
+    <line x1="55" x2="120" y1="145" y2="145"/>
+  </g>
+
+  <!-- Linie „tekstu” na prawej stronie -->
+  <g stroke="#0066FF" stroke-width="4" stroke-linecap="round">
+    <line x1="180" x2="245" y1="85" y2="85"/>
+    <line x1="180" x2="245" y1="115" y2="115"/>
+    <line x1="180" x2="245" y1="145" y2="145"/>
+  </g>
+
+  <!-- Symbol AI – koło z „płątkami” -->
+  <g fill="none" stroke="#0066FF" stroke-width="4">
+    <circle cx="150" cy="185" r="22"/>
+    <!-- sześć „zagiętych” ścieżek -->
+    <path d="M150 163 v-25"/>
+    <path d="M150 208 v25"/>
+    <path d="M128 185 h-25"/>
+    <path d="M197 185 h25"/>
+    <path d="M135 170 l-17 -17"/>
+    <path d="M165 200 l17 17"/>
+  </g>
+</svg>

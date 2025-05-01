@@ -1,7 +1,4 @@
 import Menu from './Menu'
-interface Props {
-	setSessionID: React.Dispatch<React.SetStateAction<number>>
-}
 
 export default function Header() {
 	return (
