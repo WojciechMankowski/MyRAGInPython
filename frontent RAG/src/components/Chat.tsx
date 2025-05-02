@@ -1,40 +1,55 @@
-import { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import { InputUser } from './userInput'
 import MessageCard from './messageUser'
-import { useMessageContext } from '../context/MessagesContext' // <-- poprawne
+import { useMessageContext } from '../context/MessagesContext'
 
-const Chat = () => {
-	const { messages } = useMessageContext()
+const SCROLL_THRESHOLD = 50
+
+const Chat: React.FC = () => {
+	const { messages, sessions, sessionID } = useMessageContext()
 	const containerRef = useRef<HTMLDivElement>(null)
 	const [autoScroll, setAutoScroll] = useState(true)
+	let title: string | undefined | null = ''
 
+	if (sessionID !== 0) {
+		const session = sessions.find(s => s.id === sessionID)
+		title = session?.title // jeśli nie ma takiej sesji, title będzie undefined
+	}
+	// Scroll to bottom when new messages arrive
 	useEffect(() => {
-		const c = containerRef.current
-		if (c && autoScroll) {
-			c.scrollTop = c.scrollHeight
+		const container = containerRef.current
+		if (container && autoScroll) {
+			container.scrollTop = container.scrollHeight
 		}
 	}, [messages, autoScroll])
 
-	const handleScroll = () => {
-		const c = containerRef.current
-		if (!c) return
-		const isAtBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 50
-		setAutoScroll(isAtBottom)
-	}
+	// Detect user's manual scrolling
+	const handleScroll = useCallback(() => {
+		const container = containerRef.current
+		if (!container) return
+		const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight
+		setAutoScroll(distanceFromBottom < SCROLL_THRESHOLD)
+	}, [])
 
 	return (
-		<div className="max-w-4xl mx-auto h-full flex flex-col border border-gray-200 rounded-2xl shadow-lg bg-white overflow-hidden">
-			{/* Scrollowalny kontener */}
+		<div className="h-full flex flex-col border border-gray-200 rounded-2xl shadow-lg bg-white overflow-hidden">
+			{/* Scrollable messages container */}
 			<div
 				ref={containerRef}
 				onScroll={handleScroll}
 				className="flex-1 min-h-0 bg-gray-50 space-y-4 overflow-y-auto p-6">
-				{messages.map((msg, i) => (
-					<MessageCard key={msg.id ?? i} message={msg} sender={msg.sender} />
+				{messages.map((msg, index) => (
+					<MessageCard
+						key={msg.id ?? index}
+						message={msg}
+						sender={msg.sender}
+						info={msg.metadata?.file_names ?? []}
+						title={title}
+					/>
 				))}
 			</div>
 
-			{/* Pole input */}
+			{/* Input field */}
 			<div className="p-4 bg-white border-t border-gray-200">
 				<InputUser />
 			</div>

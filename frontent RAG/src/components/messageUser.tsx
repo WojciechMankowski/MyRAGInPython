@@ -1,11 +1,12 @@
 import { PropsMessage } from '../types/Props'
 import React from 'react'
 import Markdown from 'react-markdown'
+import { InfoTooltip } from './InfoTooltip'
+import CopyButton from './CopyButton'
 
-const MessageCard: React.FC<PropsMessage> = ({ message, sender }) => {
+const MessageCard: React.FC<PropsMessage> = ({ message, sender, info, title }) => {
 	const isUser = sender === 'user'
 	const userName = 'Wojtek'
-
 	return (
 		<div className={`w-full flex px-3.5 ${isUser ? 'justify-start' : 'justify-end'}`}>
 			<div
@@ -19,9 +20,17 @@ const MessageCard: React.FC<PropsMessage> = ({ message, sender }) => {
 					<span className="text-xs text-gray-500 ml-2">{new Date(message.created_at).toLocaleString()}</span>
 				</div>
 
-				<span className={`prose prose-sm break-words ${isUser ? 'text-blue-900' : 'text-gray-800'}`}>
+				<span
+					className={`prose prose-sm break-words 
+					${isUser ? 'text-blue-900' : 'text-gray-800 text-left'}`}>
 					<Markdown>{message.content}</Markdown>
 				</span>
+				<div className="icon flex items-start pt-5">
+					<span className='pr-2'>
+						<CopyButton text={message.content} title={title} />
+					</span>
+					{isUser ? '' : <InfoTooltip info={info} />}
+				</div>
 			</div>
 		</div>
 	)

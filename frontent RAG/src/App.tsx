@@ -57,7 +57,7 @@ const App: React.FC = () => {
 		const date_b = new Date(b.created_at).getTime()
 		return date_a - date_b
 	})
-
+	
 	return (
 		<MessageContext.Provider
 			value={{
@@ -81,7 +81,7 @@ const App: React.FC = () => {
 					<aside className="w-1/4 bg-white p-4 overflow-auto shadow-lg">
 						<HistoryChat />
 					</aside>
-					<main className="flex-1 p-4 bg-gray-100 overflow-auto">
+					<main className="flex-1 p-4 bg-gray-100 overflow-auto w-5/6">
 						{loadingMessages && <p>Ładowanie wiadomości…</p>}
 						{errorMessages && <p className="text-red-600">{errorMessages}</p>}
 						{!loadingMessages && !errorMessages && <Chat />}
