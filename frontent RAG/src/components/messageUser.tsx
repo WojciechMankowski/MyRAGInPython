@@ -7,6 +7,7 @@ import CopyButton from './CopyButton'
 const MessageCard: React.FC<PropsMessage> = ({ message, sender, info, title }) => {
 	const isUser = sender === 'user'
 	const userName = 'Wojtek'
+	const source = [...new Set(info)]
 	return (
 		<div className={`w-full flex px-3.5 ${isUser ? 'justify-start' : 'justify-end'}`}>
 			<div
@@ -26,10 +27,10 @@ const MessageCard: React.FC<PropsMessage> = ({ message, sender, info, title }) =
 					<Markdown>{message.content}</Markdown>
 				</span>
 				<div className="icon flex items-start pt-5">
-					<span className='pr-2'>
+					<span className="pr-2">
 						<CopyButton text={message.content} title={title} />
 					</span>
-					{isUser ? '' : <InfoTooltip info={info} />}
+					{isUser ? '' : <InfoTooltip info={source} />}
 				</div>
 			</div>
 		</div>
